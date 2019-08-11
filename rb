@@ -71,6 +71,8 @@ delete() { \
         }
         /id='$base'/d" "$webdir/$blogfile"
     sed -i "" "/<li>.*<a href='blog\\/$base.html'>/d" "$webdir/$indexfile"
+    repl=$(grep -E "^<li>" "$webdir/$indexfile" | sed 5q | tr -d '\n' | sed -e 's/[\/&\;\!]/\\&/g')
+    sed -i "" "s/<\!--BLOG-->.*/<\!--BLOG-->$repl/g" "$webdir/index.html"
     echo -e "lcd $webdir\ncd www\nput index.html\nput blog.html\nput blogindex.html\nput rss.xml\nlcd blog\ncd blog\nput .htaccess\nrm $basefile\nquit" | sftp -P 22 $sftpaddress
     rm "$webdir/blog/$basefile" 2>/dev/null && printf "Old blog entry removed.\\n" ; }
 
