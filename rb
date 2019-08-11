@@ -51,6 +51,8 @@ publish() { \
     sed -i "" "/<!-- RB -->/r $tmpdir/index" "$indexfile"
     sed -i "" "/ \"$base.html\"/d" "$webdir/blog/.htaccess"
     echo "AddDescription \"$realname\" \"$basefile\" #$rssdate" >> "$webdir/blog/.htaccess"
+    repl=$(grep -E "^<li>" "$indexfile" | sed 5q | tr -d '\n')
+    sed -i "" "s/<!--BLOG-->.*/<!--BLOG-->$repl/g" "$webdir/index.html"
     echo -e "cd www\nput blog.html\nput blogindex.html\nput rss.xml\ncd blog\nlcd blog\nput .htaccess\nput $basefile\nquit" | sftp -P 22 $sftpaddress
     rm -f "$webdir/blog/.drafts/$chosen"
 }
